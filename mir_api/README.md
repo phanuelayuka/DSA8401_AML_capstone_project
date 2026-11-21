@@ -8,6 +8,24 @@ Serves the pH model (and optionally SOC) trained in the MIR calibration notebook
 3. `cp .env.example .env` and set `DJANGO_SECRET_KEY` and `DJANGO_ALLOWED_HOSTS`.
 4. `docker compose up --build -d`
 
+## Live deployment
+
+The API is live at **https://mir-soil-api.fly.dev** (Fly.io, Johannesburg region).
+
+| URL | Purpose |
+|---|---|
+| https://mir-soil-api.fly.dev/docs/ | Swagger UI — interactive browser testing |
+| https://mir-soil-api.fly.dev/redoc/ | ReDoc — API reference |
+| https://mir-soil-api.fly.dev/health | Health check |
+| https://mir-soil-api.fly.dev/models | Model metadata |
+| https://mir-soil-api.fly.dev/predict | Prediction endpoint |
+
+To redeploy after changes:
+```bash
+cd mir_api
+fly deploy
+```
+
 ## Endpoints
 | Method | Path | Purpose |
 |---|---|---|

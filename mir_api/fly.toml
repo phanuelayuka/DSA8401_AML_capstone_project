@@ -1,0 +1,28 @@
+app = "mir-soil-api"
+primary_region = "jnb"
+
+[build]
+
+[env]
+  DJANGO_DEBUG = "False"
+  ENABLED_TARGETS = "ph_h2o"
+  MAX_UPLOAD_ROWS = "5000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "15s"
+    method = "GET"
+    path = "/health"
+    timeout = "10s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

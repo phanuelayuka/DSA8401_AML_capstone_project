@@ -150,6 +150,28 @@ The tests compare API output with the saved model's own predictions and check th
 
 Each result carries `reliability`: `ok`, or `do_not_use` when the spectrum lies outside the calibration domain. No authentication is required. More detail is in `mir_api/README.md`.
 
+## Live API deployment
+
+The API is deployed on [Fly.io](https://fly.io) and can be used directly without any local setup.
+
+| URL | Purpose |
+|---|---|
+| https://mir-soil-api.fly.dev/docs/ | **Swagger UI** — open in a browser to test all endpoints interactively |
+| https://mir-soil-api.fly.dev/redoc/ | ReDoc — readable API reference |
+| https://mir-soil-api.fly.dev/health | Health check |
+| https://mir-soil-api.fly.dev/models | Model metadata and validation metrics |
+| https://mir-soil-api.fly.dev/predict | Prediction endpoint (POST, `file` field) |
+
+No authentication is required. To run a prediction from the command line:
+
+```bash
+curl -F "file=@spectra.csv" https://mir-soil-api.fly.dev/predict
+```
+
+Or open **https://mir-soil-api.fly.dev/docs/**, click `POST /predict` → **Try it out**, attach your spectra file, and click **Execute**.
+
+**Infrastructure:** single shared-CPU machine (512 MB RAM), Docker image built from `mir_api/Dockerfile` with models into the image. Deployed with `fly deploy` from the `mir_api/` directory.
+
 ## Limitations
 
 - Only 121 calibration samples, and 20 subsoil samples, so subsoil accuracy is uncertain.
