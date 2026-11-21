@@ -67,7 +67,7 @@ flowchart LR
         N[nginx :80] --> P[Django + gunicorn]
         M --> P
     end
-    U[Client: CSV or Excel upload] -->|POST /predict with X-API-Key| N
+    U[Client: CSV or Excel upload] -->|POST /predict| N
     P -->|pH, interval, domain flag| U
 ```
 
@@ -118,16 +118,17 @@ Results use fixed random seeds, so a rerun on the same data should give the same
    ```bash
    cd mir_api
    cp .env.example .env
-   # edit .env: DJANGO_SECRET_KEY, API_KEY, DJANGO_ALLOWED_HOSTS
+   # edit .env: DJANGO_SECRET_KEY, DJANGO_ALLOWED_HOSTS
    ```
 4. Start the services:
    ```bash
    docker compose up --build -d
    curl http://localhost/health
    ```
-5. Send a spectra file (needs a `layer_id` column and one numeric column per wavenumber):
+5. Open **http://localhost/docs/** in a browser. The Swagger UI lets you call every endpoint directly — click `POST /predict` → **Try it out**, attach your spectra file, and click **Execute** to get predictions without writing any code. See `mir_api/README.md` for a step-by-step walkthrough.
+6. Or send a spectra file from the command line (needs a `layer_id` column and one numeric column per wavenumber):
    ```bash
-   curl -H "X-API-Key: $API_KEY" -F "file=@spectra.csv" http://localhost/predict
+   curl -F "file=@spectra.csv" http://localhost/predict
    ```
 
 ### 3. Run the API tests
@@ -144,8 +145,10 @@ The tests compare API output with the saved model's own predictions and check th
 | GET | `/health` | Loads the models, used by the Docker health check |
 | GET | `/models` | Recipe, validated accuracy and interval widths per model |
 | POST | `/predict` | Upload `file` (.csv or .xlsx), returns predictions with intervals and a domain flag |
+| GET | `/docs/` | Swagger UI — interactive browser interface for testing all endpoints |
+| GET | `/redoc/` | ReDoc — readable reference for the full API schema |
 
-Each result carries `reliability`: `ok`, or `do_not_use` when the spectrum lies outside the calibration domain. More detail is in `mir_api/README.md`.
+Each result carries `reliability`: `ok`, or `do_not_use` when the spectrum lies outside the calibration domain. No authentication is required. More detail is in `mir_api/README.md`.
 
 ## Limitations
 
